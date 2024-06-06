@@ -14,11 +14,7 @@ import org.springframework.web.bind.annotation.*;
 public class BookStoreController {
     private final static String NO_SUCH_BOOK = "Error: no such Book with id ";
 
-    private final BookService store;
-
-    BookStoreController(BookRepository repository) {
-        this.store = new BookService(repository);
-    }
+    private final BookService store = new BookService();
 
     // 1. Get health
     @GetMapping("/books/health")
@@ -36,16 +32,13 @@ public class BookStoreController {
 
         if (store.getAllBooks().stream().anyMatch(book -> book.getTitle().equalsIgnoreCase(newBook.getTitle()))){
             msg = "Error: Book with the title "+newBook.getTitle()+" already exists in the system";
-            //return ResponseEntity.status(HttpStatus.CONFLICT).body(new ServerResponse<>(null, msg));
         }
         else if (newBook.getPrice() <= 0){
             msg = "Error: Can’t create new Book with negative price";
-            //return ResponseEntity.status(HttpStatus.CONFLICT).body(new ServerResponse<>(null, msg));
         }
         else if (newBook.getPrintYear() < 1940 || newBook.getPrintYear() > 2100){
             msg = "Error: Can’t create new Book that its year "+newBook.getPrintYear()
                     +" is not in the accepted range [1940-> 2100]";
-            //return ResponseEntity.status(HttpStatus.CONFLICT).body(new ServerResponse<>(null, msg));
         }
         else {
             status = HttpStatus.OK;
@@ -115,18 +108,6 @@ public class BookStoreController {
         else{
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ServerResponse<>(null, NO_SUCH_BOOK + id));
         }
-
-
-/*        return store.getBookById(id)
-                .map(b->
-                     (price <= 0) ?
-                        ResponseEntity.status(HttpStatus.CONFLICT)
-                                .body(new ServerResponse<>(0, "Error: price update for book " + id + " must be a positive integer"))
-                    :
-                        ResponseEntity.ok(new ServerResponse<>(store.updatePrice(b, price), null))
-                )
-                .orElseGet(() ->
-                    ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ServerResponse<>(null, NO_SUCH_BOOK + id)));*/
     }
 
     // 7. Delete book. result = number of books left in the system
