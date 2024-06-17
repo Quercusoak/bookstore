@@ -22,6 +22,15 @@ public class Book {
     @JsonProperty("genres")
     private List<Genre> genre;
 
+    public Book(String title, String author, Integer printYear, Integer price, List<Genre> genre) {
+        this.id = 0;
+        this.title = title;
+        this.author = author;
+        this.printYear = printYear;
+        this.price = price;
+        this.genre = genre;
+    }
+
     public Book(Book b){
         this.id = ++count;
         this.title= b.getTitle();

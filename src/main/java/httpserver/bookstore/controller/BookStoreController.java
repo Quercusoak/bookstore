@@ -1,31 +1,32 @@
 package httpserver.bookstore.controller;
 
-import java.util.List;
 import java.util.Optional;
 
 import httpserver.bookstore.book.Book;
-import httpserver.bookstore.book.Genre;
 import httpserver.bookstore.dto.ServerResponse;
+import httpserver.bookstore.service.BookService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 @RestController
+@RequestMapping("/book")
 public class BookStoreController {
+    private static Logger log = LogManager.getLogger(BookStoreController.class);
+    private static String REQUEST_LOG_MESSAGE = "Incoming request | #{request number} | resource: {resource name} | HTTP Verb {HTTP VERB in capital letter (GET, POST, etc)}";
     private final static String NO_SUCH_BOOK = "Error: no such Book with id ";
 
-    private final BookService store = new BookService();
+    private final BookService store;
 
-    // 1. Get health
-    @GetMapping("/books/health")
-    public ResponseEntity<String> health(){
-        return ResponseEntity.ok("OK");
+    BookStoreController(BookService store) {
+        this.store = store;
     }
 
     // 2. Create a new Book, returns newly assigned Book number
-    @PostMapping("/book")
+    @PostMapping
     public ResponseEntity<ServerResponse<Integer>> newBook(@RequestBody Book newBook) {
-
         HttpStatus status = HttpStatus.CONFLICT;
         String msg = null;
         Integer id = null;
@@ -48,40 +49,9 @@ public class BookStoreController {
         return ResponseEntity.status(status).body(new ServerResponse<>(id, msg));
     }
 
-    // 3. Returns the total number of Books in the system, according to optional filters.
-    // All filters optional, if none submitted then returns all books.
-    @GetMapping("/books/total")
-    public ResponseEntity<ServerResponse<Integer>> getTotal(
-            @RequestParam(name = "author",required = false) Optional<String> author,
-            @RequestParam(name = "price-bigger-than" ,required = false) Optional<Integer> priceMin,
-            @RequestParam(name = "price-less-than" ,required = false) Optional<Integer> priceMax,
-            @RequestParam(name = "year-bigger-than" ,required = false) Optional<Integer> yearMin,
-            @RequestParam(name = "year-less-than" ,required = false) Optional<Integer> yearMax,
-            @RequestParam(name = "genres" ,required = false) Optional<List<Genre>> genres) {
-
-        Integer books = store.getBooksByFilters(author, priceMin, priceMax, yearMin, yearMax, genres).size();
-
-        return ResponseEntity.ok(new ServerResponse<>(books, null));
-    }
-
-    // 4. Returns the content of the books according to the given filters as described by the total endpoint.
-    // All filters optional, if none submitted then returns all books.
-    @GetMapping("/books")
-    public ResponseEntity<ServerResponse<List<Book>>> getBooksData(
-            @RequestParam(name = "author",required = false) Optional<String> author,
-            @RequestParam(name = "price-bigger-than" ,required = false) Optional<Integer> priceMin,
-            @RequestParam(name = "price-less-than" ,required = false) Optional<Integer> priceMax,
-            @RequestParam(name = "year-bigger-than" ,required = false) Optional<Integer> yearMin,
-            @RequestParam(name = "year-less-than" ,required = false) Optional<Integer> yearMax,
-            @RequestParam(name = "genres" ,required = false) Optional<List<Genre>> genres) {
-
-        List<Book> books = store.getBooksByFilters(author, priceMin, priceMax, yearMin, yearMax, genres);
-
-        return ResponseEntity.ok(new ServerResponse<>(books, null));
-    }
 
     // 5. Gets a single book’s data according to its id
-    @GetMapping("/book")
+    @GetMapping
     public ResponseEntity<ServerResponse<Book>> getSingleBookData(@RequestParam Integer id) {
 
         return store.getBookById(id)
@@ -91,7 +61,7 @@ public class BookStoreController {
     }
 
     // 6. Updates given book’s price. Query Parameters: id, price. result = old price
-    @PutMapping("/book")
+    @PutMapping
     public ResponseEntity<ServerResponse<Integer>> updatePrice(
             @RequestParam(name = "id") Integer id,
             @RequestParam(name = "price") Integer price) {
@@ -111,7 +81,7 @@ public class BookStoreController {
     }
 
     // 7. Delete book. result = number of books left in the system
-    @DeleteMapping("/book")
+    @DeleteMapping
     public ResponseEntity<ServerResponse<Integer>> deleteBook(@RequestParam Integer id) {
 
         return store.getBookById(id)

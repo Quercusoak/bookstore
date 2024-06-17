@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="warn" monitorInterval="5">
+
+    <Appenders>
+
+
+        <File name="requestsAppender" fileName="logs/requests.log" append="false">
+            <PatternLayout>
+                <Pattern>%d{dd-mm-yyyy hh:mm:ss.sss} %-5p: %msg | request #%x(%X{REQUEST-NUM})%n</Pattern>
+            </PatternLayout>
+        </File>
+
+        <Console name="Console" target="SYSTEM_OUT">
+            <PatternLayout pattern="%d{dd-mm-yyyy hh:mm:ss.sss} %-5p: %msg | request #%x(%X{REQUEST-NUM})%n"/>
+            <!--{date-time} {log-level}: {log-message} | request #{request-number}-->
+        </Console>
+    </Appenders>
+
+    <Loggers>
+
+        <logger name="request-logger" level="INFO" additivity="false">
+            <AppenderRef ref="Console"/>
+            <AppenderRef ref="requestsAppender"/>
+        </logger>
+
+        <Root level="INFO">
+            <AppenderRef ref="Console"/>
+        </Root>
+
+    </Loggers>
+
+</Configuration>
