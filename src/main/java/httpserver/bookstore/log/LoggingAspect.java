@@ -2,11 +2,9 @@ package httpserver.bookstore.log;
 
 import httpserver.bookstore.dto.ServerResponse;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.ThreadContext;
-import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.*;
 import org.springframework.http.ResponseEntity;
@@ -18,7 +16,7 @@ public class LoggingAspect {
 
     private Integer requestCounter =0;
 
-    private static String  REQUEST_COUNTER= "REQUEST_COUNTER";
+    private static final String  REQUEST_COUNTER= "REQUEST_COUNTER";
 
     private String REQUEST_LOG_INFO_MESSAGE(String resource, String method) {
         return "Incoming request | #"+requestCounter+" | resource: "+resource+" | HTTP Verb "+method;
