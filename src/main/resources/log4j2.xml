@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="warn" monitorInterval="5">
+
+    <Properties>
+        <Property name="LOG_PATTERN">%d{dd-mm-yyyy hh:mm:ss.sss} %-5p: %msg | request #%X{REQUEST_COUNTER}%n</Property>
+        <!--{date-time} {log-level}: {log-message} | request #{request-number}-->
+    </Properties>
+
+    <Appenders>
+        <File name="requestsAppender" fileName="logs/requests.log" append="false">
+            <PatternLayout>
+                <Pattern>${LOG_PATTERN}</Pattern>
+            </PatternLayout>
+        </File>
+
+        <File name="booksAppender" fileName="logs/books.log" append="false">
+            <PatternLayout>
+                <Pattern>${LOG_PATTERN}</Pattern>
+            </PatternLayout>
+        </File>
+
+        <Console name="Console" target="SYSTEM_OUT">
+            <PatternLayout>
+                <Pattern>${LOG_PATTERN}</Pattern>
+            </PatternLayout>
+        </Console>
+
+        <Console name="default" target="SYSTEM_OUT">
+            <PatternLayout>
+                <Pattern>%d{dd-mm-yyyy hh:mm:ss.sss} %-5p: %msg%n</Pattern>
+            </PatternLayout>
+        </Console>
+    </Appenders>
+
+    <Loggers>
+        <logger name="request-logger" level="INFO" additivity="false">
+            <AppenderRef ref="Console"/>
+            <AppenderRef ref="requestsAppender"/>
+        </logger>
+
+        <logger name="books-logger" level="DEBUG" additivity="false">
+            <AppenderRef ref="booksAppender"/>
+        </logger>
+
+        <Root level="INFO">
+            <AppenderRef ref="default"/>
+        </Root>
+    </Loggers>
+
+</Configuration>

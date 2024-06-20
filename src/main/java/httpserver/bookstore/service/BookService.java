@@ -1,4 +1,4 @@
-package httpserver.bookstore.controller;
+package httpserver.bookstore.service;
 
 import httpserver.bookstore.book.Book;
 import httpserver.bookstore.book.Genre;
