@@ -38,7 +38,7 @@
             <AppenderRef ref="requestsAppender"/>
         </logger>
 
-        <logger name="books-logger" level="DEBUG" additivity="false">
+        <logger name="books-logger" level="INFO" additivity="false">
             <AppenderRef ref="booksAppender"/>
         </logger>
 
